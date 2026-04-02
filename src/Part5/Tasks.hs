@@ -1,32 +1,35 @@
 module Part5.Tasks where
 
-import Util(notImplementedYet)
-
 -- Реализуйте левую свёртку
 myFoldl :: (b -> a -> b) -> b -> [a] -> b
-myFoldl = notImplementedYet
+myFoldl _ x [] = x
+myFoldl f x (h : t) = myFoldl f (f x h) t
 
 -- Реализуйте правую свёртку
 myFoldr :: (a -> b -> b) -> b -> [a] -> b
-myFoldr = notImplementedYet
+myFoldr _ x [] = x
+myFoldr f x (h : t) = f h (myFoldr f x t)
 
 -- Используя реализации свёрток выше, реализуйте все остальные функции в данном файле
 
 myMap :: (a -> b) -> [a] -> [b]
-myMap f = notImplementedYet
+myMap f = myFoldr ((:) . f) []
 
 myConcatMap :: (a -> [b]) -> [a] -> [b]
-myConcatMap f = notImplementedYet
+myConcatMap f = myFoldr ((<>) . f) []
 
 myConcat :: [[a]] -> [a]
-myConcat = notImplementedYet
+myConcat = myFoldr (<>) []
 
 myReverse :: [a] -> [a]
-myReverse = notImplementedYet
+myReverse = myFoldl (flip (:)) []
 
 myFilter :: (a -> Bool) -> [a] -> [a]
-myFilter p = notImplementedYet
+myFilter p = myFoldr f []
+    where f h t = if p h then h:t
+                         else t
 
 myPartition :: (a -> Bool) -> [a] -> ([a], [a])
-myPartition p = notImplementedYet
-
+myPartition p = myFoldr f ([], [])
+    where f x (fit, unfit) = if p x then (x:fit, unfit)
+                                    else (fit, x:unfit)
